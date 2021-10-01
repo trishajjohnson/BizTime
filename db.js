@@ -8,7 +8,7 @@ if(process.env.NODE_ENV === "test") {
     DB_URI = 'postgres:///biztime';
 }
 
-let db = new Client({
+const db = new Client({
     connectionString: DB_URI
 });
 
