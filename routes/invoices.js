@@ -20,13 +20,13 @@ router.get('/', async function(req, res, next) {
 
 router.post('/', async function(req, res, next) {
     try {
-        const { comp_Code, amt } = req.body;
+        const { comp_code, amt } = req.body;
         console.log('inside post route before result');
         const result = await db.query(`
-        INSERT INTO invoices (comp_Code, amt)
+        INSERT INTO invoices (comp_code, amt)
         VALUES ($1, $2)
-        RETURNING id, comp_Code, amt, paid, add_date, paid_date`,
-        [comp_Code, amt]
+        RETURNING id, comp_code, amt, paid, add_date, paid_date`,
+        [comp_code, amt]
         );
         console.log('inside post route after result');
         
@@ -56,7 +56,7 @@ router.get('/:id', async function(req, res, next) {
         );
 
         if(result.rows.length === 0) {
-            throw new ExpressError(`Invoice #${req.params.id} does not exist`, 404);
+            throw new ExpressError(`Invoice #${req.params.id} not found`, 404);
         }
 
         const data = result.rows[0];
@@ -81,18 +81,42 @@ router.get('/:id', async function(req, res, next) {
 
 router.put('/:id', async function(req, res, next) {
     try {
-        const { amt } = req.body;
-        const result = await db.query(`
-        UPDATE invoices
-        SET amt=$1
-        WHERE id=$2
-        RETURNING id, comp_Code, amt, paid, add_date, paid_date`,
-        [amt, req.params.id]
-        );
+        const { amt, paid } = req.body;
+        let paidDate = null;
+        let id = req.params.id;
 
-        if(result.rows.length === 0) {
-            throw new ExpressError(`Invoice #${req.params.id} not found`, 404);
+        const inv = await db.query(`
+            SELECT paid
+            FROM invoices
+            WHERE id=$1`,
+            [id]
+        );
+        
+        if(inv.rows.length === 0) {
+            throw new ExpressError(`Invoice #${id} not found`, 404);
         }
+
+        let currPaidDate = inv.rows[0].paid_date;
+
+        if(!currPaidDate && paid) {
+            paidDate = new Date();
+        }
+
+        else if(!paid) {
+            paidDate = null;
+        }
+        else {
+            paidDate = currPaidDate;
+        }
+
+        console.log('after if conditionals')
+        const result = await db.query(`
+            UPDATE invoices
+            SET amt=$1, paid=$2, paid_date=$3 
+            WHERE id=$4
+            RETURNING id, comp_code, amt, paid, add_date, paid_date`,
+            [amt, paid, paidDate, id]
+        );
 
         return res.json({ invoice: result.rows[0] });
     }

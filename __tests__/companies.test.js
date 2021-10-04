@@ -11,7 +11,7 @@ let testCompany;
 beforeEach(async () => {
     let result = await db.query(`
     INSERT INTO companies (code, name, description)
-    VALUES ('wfm', 'Whole Foods Market', 'Natural Foods Grocery Store')
+    VALUES ('wholefoodsmarket', 'Whole Foods Market', 'Natural Foods Grocery Store')
     RETURNING code, name, description
     `);
 
@@ -34,7 +34,7 @@ describe('GET /companies', () => {
         const res = await request(app).get(`/companies`);
 
         expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({companies: [{code: 'wfm', name: 'Whole Foods Market'}]});
+        expect(res.body).toEqual({companies: [{code: 'wholefoodsmarket', name: 'Whole Foods Market'}]});
     });
 });
 
@@ -43,12 +43,12 @@ describe('GET /companies/:code', () => {
         const res = await request(app).get(`/companies/${testCompany.code}`);
 
         expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({company: {code: 'wfm', name: 'Whole Foods Market', description: 'Natural Foods Grocery Store', invoices: []}});
+        expect(res.body).toEqual({company: {code: 'wholefoodsmarket', name: 'Whole Foods Market', description: 'Natural Foods Grocery Store', invoices: []}});
     });
 
     test("Responds with 404 with invalid code", async function() {
         const response = await request(app).get(`/companies/jhiklj`);
-        expect(response.statusCode).toEqual(404);
+        expect(response.statusCode).toBe(404);
     });
 });
 
@@ -57,13 +57,12 @@ describe('POST /companies', () => {
         const res = await request(app)
             .post(`/companies`)
             .send({
-                code: 'apple',
-                name: 'Apple inc',
+                name: 'Apple',
                 description: 'Maker of the iPhone'
             });
 
         expect(res.statusCode).toBe(201);
-        expect(res.body).toEqual({company: {code: 'apple', description: 'Maker of the iPhone', name: 'Apple inc'}});
+        expect(res.body).toEqual({company: {code: 'apple', description: 'Maker of the iPhone', name: 'Apple'}});
     });
 });
 
@@ -77,12 +76,12 @@ describe('PUT /companies/:code', () => {
             });
 
         expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({company: {code: 'wfm', name: 'Whole Foods Grocery', description: 'Natural Foods Grocery Store'}});
+        expect(res.body).toEqual({company: {code: 'wholefoodsmarket', name: 'Whole Foods Grocery', description: 'Natural Foods Grocery Store'}});
     });
 
-    test("Responds with 404 with invalid code", async function() {
+    test("Responds with 404 with invalid company code", async function() {
         const response = await request(app).put(`/companies/jhiklj`);
-        expect(response.statusCode).toEqual(404);
+        expect(response.statusCode).toBe(404);
     });
 });
 
