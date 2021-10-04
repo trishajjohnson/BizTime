@@ -20,6 +20,7 @@ app.use(function(req, res, next) {
 // Global Error Handler 
 
 app.use(function(err, req, res, next) {
+    console.log("inside the generic 500 error handler")
     res.status(err.status || 500);
 
     return res.json({

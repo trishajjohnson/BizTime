@@ -21,14 +21,15 @@ router.get('/', async function(req, res, next) {
 router.post('/', async function(req, res, next) {
     try {
         const { comp_Code, amt } = req.body;
-
+        console.log('inside post route before result');
         const result = await db.query(`
         INSERT INTO invoices (comp_Code, amt)
         VALUES ($1, $2)
         RETURNING id, comp_Code, amt, paid, add_date, paid_date`,
         [comp_Code, amt]
         );
-
+        console.log('inside post route after result');
+        
         return res.status(201).json({ invoice: result.rows[0] });
     }
     catch (err) {
