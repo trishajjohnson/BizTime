@@ -109,7 +109,6 @@ router.put('/:id', async function(req, res, next) {
             paidDate = currPaidDate;
         }
 
-        console.log('after if conditionals')
         const result = await db.query(`
             UPDATE invoices
             SET amt=$1, paid=$2, paid_date=$3 
