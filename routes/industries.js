@@ -29,7 +29,7 @@ router.post('/', async function(req, res, next) {
             [code, name]
         );
 
-        return res.status(201).json({industry: result.rows[0]});
+        return res.status(201).json({ industry: result.rows[0] });
     }
     catch (err) {
         return next(err);
@@ -38,7 +38,7 @@ router.post('/', async function(req, res, next) {
 
 router.get('/:code', async function(req, res, next) {
     try {
-        const code = req.params.code;
+        const { code } = req.params;
 
         const indResult = await db.query(`
             SELECT * 
@@ -71,7 +71,6 @@ router.get('/:code', async function(req, res, next) {
         return next(err);
     }
 });
-
 
 
 module.exports = router;

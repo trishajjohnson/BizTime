@@ -40,10 +40,10 @@ describe('GET /companies', () => {
 
 describe('GET /companies/:code', () => {
     test('GET single company', async () => {
-        const res = await request(app).get(`/companies/${testCompany.code}`);
+        const res = await request(app).get(`/companies/wholefoodsmarket`);
 
         expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual({company: {code: 'wholefoodsmarket', name: 'Whole Foods Market', description: 'Natural Foods Grocery Store', invoices: []}});
+        expect(res.body).toEqual({company: {code: 'wholefoodsmarket', name: 'Whole Foods Market', description: 'Natural Foods Grocery Store', invoices: [], industries: []}});
     });
 
     test("Responds with 404 with invalid code", async function() {

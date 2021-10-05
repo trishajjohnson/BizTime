@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
+
 const companyRoutes = require('./routes/companies');
 const invoiceRoutes = require('./routes/invoices');
 const industriesRoutes = require('./routes/industries');
+
 const ExpressError = require('./expressError');
 
 app.use(express.json());
@@ -22,7 +24,6 @@ app.use(function(req, res, next) {
 // Global Error Handler 
 
 app.use(function(err, req, res, next) {
-    console.log('inside 500 error')
     res.status(err.status || 500);
 
     return res.json({

@@ -28,7 +28,7 @@ CREATE TABLE industries (
 
 CREATE TABLE companies_industries (
   comp_code text NOT NULL REFERENCES companies ON DELETE CASCADE,
-  ind_code text NOT NULL REFERENCES industries,
+  ind_code text NOT NULL REFERENCES industries ON DELETE CASCADE,
   PRIMARY KEY (comp_code, ind_code)
 );
 
