@@ -40,7 +40,7 @@ describe('GET /companies', () => {
 
 describe('GET /companies/:code', () => {
     test('GET single company', async () => {
-        const res = await request(app).get(`/companies/wholefoodsmarket`);
+        const res = await request(app).get(`/companies/${testCompany.code}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body).toEqual({company: {code: 'wholefoodsmarket', name: 'Whole Foods Market', description: 'Natural Foods Grocery Store', invoices: [], industries: []}});
